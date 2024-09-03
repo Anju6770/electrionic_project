@@ -11,6 +11,7 @@ import 'package:electrionic_project/pages/home_page.dart';
 import 'package:electrionic_project/pages/phone.dart';
 import 'package:electrionic_project/partice.dart';
 import 'package:electrionic_project/time_pass/light_dark_theme.dart';
+import 'package:electrionic_project/time_pass/pages/home_page.dart';
 import 'package:electrionic_project/time_pass/user_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -31,7 +32,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      initialRoute: '/cover',
+      initialRoute: '/bookthing',
       getPages: [
         GetPage(name: '/signup', page: ()=> RegistrationPage()),
         GetPage(name: '/log', page: ()=> LoginPage()),
@@ -46,6 +47,7 @@ class MyApp extends StatelessWidget {
         /// Time_pass
         GetPage(name: '/book', page: ()=> Book()),
         GetPage(name: '/theme', page: ()=> LightTheme()),
+        GetPage(name: '/bookthing', page: ()=> BookThing()),
       ],
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
