@@ -86,7 +86,7 @@ class _CoverPageState extends State<CoverPage> {
           InkWell(
             onTap: () {
               if (_currentIndex == textList.length - 1) {
-                Get.toNamed('/home');
+                Get.toNamed('/signup');
               } else {
                 int nextIndex = (_currentIndex + 1) % textList.length;
                 _carouselController.animateToPage(nextIndex);

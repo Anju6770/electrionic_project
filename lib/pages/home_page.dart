@@ -1,8 +1,11 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:electrionic_project/Main_page/services.dart';
-import 'package:electrionic_project/ManageState/search_controller.dart';
+import 'package:electrionic_project/ManageState/fav_controller.dart';
+import 'package:electrionic_project/ManageState/order_controller.dart';
 import 'package:electrionic_project/auth_services/auth.dart';
 import 'package:electrionic_project/model/home.dart';
+import 'package:electrionic_project/time_pass/Constant/constants.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -19,7 +22,6 @@ class _HomePageState extends State<HomePage> {
   late String image;
 
   final storage = FirebaseStorage.instance;
-  final HomeController homeController = Get.put(HomeController());
   AuthServices _auth = AuthServices();
 
   @override
@@ -39,6 +41,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final OrderController cartController = Get.find<OrderController>();
+    final FavController favController = Get.find<FavController>();
     final CollectionReference one = FirebaseFirestore.instance.collection("first");
     final CollectionReference second = FirebaseFirestore.instance.collection("second");
     Services _services = Services();
@@ -64,8 +68,8 @@ class _HomePageState extends State<HomePage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
-                          height: 50,
-                          width: 220,
+                          height: MediaQuery.of(context).size.height*0.05,
+                          width: MediaQuery.of(context).size.width*0.5,
                           decoration: BoxDecoration(
                             image: DecorationImage(
                               image: NetworkImage(image),
@@ -75,6 +79,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                         Row(
                           children:[
+                            Gap(10),
                             Icon(Icons.notifications, size: 25),
                             Gap(10),
                             Icon(Icons.menu, size: 25),
@@ -99,57 +104,60 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     Gap(10),
-                    SizedBox(
-                      height: 180,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        shrinkWrap: true,
-                        itemCount: fir.size,
-                        itemBuilder: (context, index) {
-                          final firsts = fir.docs[index];
-                          return Container(
-                            margin: EdgeInsets.all(10),
-                            padding:EdgeInsets.all(15),
-                            width: MediaQuery.of(context).size.width * 0.65,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              image: DecorationImage(
-                                image: NetworkImage("${firsts["image"]}"),
-                                fit: BoxFit.fill,
-                              ),
+                    CarouselSlider(
+                      options: CarouselOptions(
+                        height: MediaQuery.of(context).size.height * 0.3,
+                        enlargeCenterPage: true,
+                        autoPlay: true,
+                        aspectRatio: 16 / 9,
+                        autoPlayCurve: Curves.fastOutSlowIn,
+                        enableInfiniteScroll: true,
+                        autoPlayAnimationDuration: Duration(milliseconds: 900),
+                        viewportFraction: 0.8,
+                      ),
+                      items: fir.docs.map((firsts) {
+                        return Container(
+                          margin: EdgeInsets.all(10),
+                          padding: EdgeInsets.all(15),
+                          width: MediaQuery.of(context).size.width * 0.8,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            image: DecorationImage(
+                              image: NetworkImage("${firsts["image"]}"),
+                              fit: BoxFit.fill,
                             ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "${firsts['name']}",
-                                  style:TextStyle(
-                                    fontSize: 19,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                Gap(60),
-                                Container(
-                                  height: 30,
-                                  width: 160,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "${firsts['name']}",
+                                style: TextStyle(
+                                  fontSize: 23,
+                                  fontWeight: FontWeight.bold,
                                   color: Colors.white,
-                                  child: Center(
-                                    child: Text(
-                                      "UP TO ${firsts['payment']}% OFF",
-                                      style:TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black,
-                                      ),
+                                ),
+                              ),
+                              Gap(40),
+                              Container(
+                                height: MediaQuery.of(context).size.height * 0.05,
+                                width: MediaQuery.of(context).size.width * 0.6,
+                                color: Colors.white,
+                                child: Center(
+                                  child: Text(
+                                    "UP TO ${firsts['payment']}% OFF",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
                                     ),
                                   ),
                                 ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }).toList(),
                     ),
                     Gap(15),
                     Row(
@@ -180,7 +188,7 @@ class _HomePageState extends State<HomePage> {
                         }
                         final sec = snapshot.requireData;
                         return SizedBox(
-                            height: 80,
+                            height: MediaQuery.of(context).size.height * 0.11,
                             child: ListView.builder(
                               scrollDirection: Axis.horizontal,
                               shrinkWrap: true,
@@ -245,35 +253,39 @@ class _HomePageState extends State<HomePage> {
                               crossAxisCount: 2,
                               crossAxisSpacing: 5,
                               mainAxisSpacing: 5,
-                              childAspectRatio: 0.53,
+                              childAspectRatio: 0.54,
                             ),
                             itemBuilder: (context, index) {
                               final product = Products[index];
                               return InkWell(
                                 onTap: (){
                                   Get.toNamed('/details', arguments: product);
-                                  print("${Products.length}");
                                 },
-                                child: Container(
-                                  height: 500,
-                                  width: 400,
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        height: 200,
-                                        width: double.infinity,
-                                        decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                            image: NetworkImage(product.image),
-                                            fit: BoxFit.fill,
+                                child: Column(
+                                  children: [
+                                    Stack(
+                                      children:[ Hero(
+                                        tag:product.image,
+                                        child: Container(
+                                          height: MediaQuery.of(context).size.height * 0.2,
+                                          width: double.infinity,
+                                          decoration: BoxDecoration(
+                                            image: DecorationImage(
+                                              image: NetworkImage(product.image),
+                                              fit: BoxFit.fill,
+                                            ),
                                           ),
                                         ),
-                                        child: Column(
+                                      ),
+                                        Positioned(
+                                          left: 9,
+                                          top: 2,
+                                          child: Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Container(
-                                              height: 24,
-                                              width: 50,
+                                              height: MediaQuery.of(context).size.height * 0.05,
+                                              width: MediaQuery.of(context).size.width * 0.13,
                                               decoration: BoxDecoration(
                                                 borderRadius: BorderRadius.circular(6),
                                                 color: Colors.black,
@@ -281,69 +293,69 @@ class _HomePageState extends State<HomePage> {
                                               child: Row(
                                                 mainAxisAlignment: MainAxisAlignment.center,
                                                 children: [
-                                                  Text(product.rating, style:TextStyle(color: Colors.white),),
+                                                  Text(product.rating, style: TextStyle(color: Colors.white)),
                                                   Gap(4),
-                                                  Icon(Icons.star, color: Colors.white, size: 20,),
+                                                  Icon(Icons.star, color: Colors.white, size: 20),
                                                 ],
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Container(
-                                        padding:EdgeInsets.all(5),
-                                        height: 150,
-                                        width: double.infinity,
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              product.name,
-                                              style:TextStyle(fontSize: 20),
-                                              maxLines: 2,
-                                            ),
-                                            Gap(4),
-                                            Row(
-                                              children: [
-                                                Text(
-                                                  product.pay,
-                                                  style:TextStyle(
-                                                      fontSize: 18,
-                                                      fontWeight: FontWeight.bold),
-                                                ),
-                                                Gap(6),
-                                                Text(
-                                                  product.pay,
-                                                  style:TextStyle(
-                                                    fontSize: 15,
-                                                    color: Colors.grey,
-                                                    decoration:
-                                                    TextDecoration.lineThrough,
-                                                  ),
-                                                ),
-                                                Gap(5),
-                                                Text(
-                                                  product.discount,
-                                                  style:TextStyle(
-                                                    fontSize: 17,
-                                                    color: Colors.green,fontWeight: FontWeight.bold
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            Gap(5),
-                                            Row(
-                                              children: [
-                                                Icon(Icons.discount),
-                                                Gap(5),
-                                                Text("Exchange Offers",style: TextStyle(fontSize: 16),),
-                                              ],
                                             )
                                           ],
-                                        ),
+                                        ),)
+                                      ]
+                                    ),
+                                    Container(
+                                      padding:EdgeInsets.all(5),
+                                      height: MediaQuery.of(context).size.height * 0.2,
+                                      width: double.infinity,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            product.name,
+                                            style:TextStyle(fontSize: 20),
+                                            maxLines: 2,
+                                          ),
+                                          Gap(4),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                product.pay,
+                                                style:TextStyle(
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.bold),
+                                              ),
+                                              Gap(6),
+                                              Text(
+                                                product.pay,
+                                                style:TextStyle(
+                                                  fontSize: 15,
+                                                  color: Colors.grey,
+                                                  decoration:
+                                                  TextDecoration.lineThrough,
+                                                ),
+                                              ),
+                                              Gap(5),
+                                              Text(
+                                                product.discount,
+                                                style:TextStyle(
+                                                  fontSize: 17,
+                                                  color: Colors.green,fontWeight: FontWeight.bold
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Gap(5),
+                                          Row(
+                                            children: [
+                                              Icon(Icons.discount),
+                                              Gap(5),
+                                              Text("Exchange Offers",style: TextStyle(fontSize: 16),),
+                                            ],
+                                          )
+                                        ],
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
                               );
                             },

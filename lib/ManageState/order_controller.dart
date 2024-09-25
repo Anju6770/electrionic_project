@@ -2,6 +2,50 @@ import 'package:electrionic_project/model/home.dart';
 import 'package:get/get.dart';
 
 class OrderController extends GetxController {
+  var cartItems = <HomeModel>[].obs;
+  var totalPrice = 0.0.obs;
+
+  bool addToCart(HomeModel product) {
+    if (product.id == null) {
+      print('Product does not have an ID');
+      return false;
+    }
+
+    bool exists = cartItems.any((item) => item.id == product.id);
+
+    if (!exists) {
+      cartItems.add(
+          product);
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  void removeFromCart(HomeModel product) {
+    cartItems.removeWhere((item) => item.id == product.id);
+    update();
+  }
+
+  int get totalItems => cartItems.length;
+
+  void incrementQuantity(HomeModel product) {
+    product.quantity++;
+    update();
+  }
+
+  void decrementQuantity(HomeModel product) {
+    if (product.quantity > 0) {
+      product.quantity--;
+      update();
+    }
+  }
+
+  double getTotalPrice() {
+    return cartItems.fold(0, (total, item) {
+      return total + (item.payment*item.quantity);
+    });
+  }
 
   var isDelivery = true.obs;
   var quantity = 1.obs;
@@ -9,22 +53,4 @@ class OrderController extends GetxController {
   void toggleDelivery(bool value) {
     isDelivery.value = value;
   }
-
-  void increaseQuantity() {
-    quantity.value++;
-  }
-
-  void decreaseQuantity() {
-    if (quantity.value > 1) {
-      quantity.value--;
-    }
-  }
-  //
-  // double calculateTotal() {
-  //   double total = 0;
-  //   for (var product in ) {
-  //     total += product.payment * product.quantity;
-  //   }
-  //   return total;
-  // }
 }

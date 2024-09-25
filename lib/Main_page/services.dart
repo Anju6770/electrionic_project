@@ -13,9 +13,11 @@ class Services {
     await docRef.set(place.toMap());
   }
   Stream<List<HomeModel>> fetchProducts() {
-    return FirebaseFirestore.instance.collection('home').snapshots().map(
-            (snapshot) => snapshot.docs
-            .map((doc) => HomeModel.fromMap(doc.data()))
-            .toList());
+    return FirebaseFirestore.instance
+        .collection('home')
+        .snapshots() // Fetch the snapshots as a stream
+        .map((snapshot) => snapshot.docs
+        .map((doc) => HomeModel.fromMap(doc.data(), doc.id))
+        .toList());
   }
 }

@@ -1,9 +1,10 @@
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:electrionic_project/Main_page/details_services.dart';
-import 'package:electrionic_project/Main_page/services.dart';
+import 'package:electrionic_project/ManageState/fav_controller.dart';
 import 'package:electrionic_project/ManageState/order_controller.dart';
-import 'package:electrionic_project/model/Third_model.dart';
 import 'package:electrionic_project/model/home.dart';
+import 'package:electrionic_project/pages/fav_page.dart';
+import 'package:electrionic_project/time_pass/Constant/constants.dart';
+import 'package:badges/badges.dart' as badges;
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
@@ -17,40 +18,53 @@ class HomeDetails extends StatefulWidget {
 class _HomeDetailsState extends State<HomeDetails> {
   bool isExpanded = false;
   bool favorite = false;
-  final List<String> imageUrls = [
-    'https://i.pinimg.com/236x/26/ea/50/26ea5063cbe4d6ccd123f9ab207a1f24.jpg',
-    'https://i.pinimg.com/236x/81/ea/23/81ea2336b52355455f05518292bf76be.jpg',
-    'https://i.pinimg.com/236x/c9/26/64/c92664b7a33d9c0d8babdd0e1a77336b.jpg',
-    'https://i.pinimg.com/236x/67/c3/22/67c3228c2f79710f391c02182d224438.jpg',
-    'https://i.pinimg.com/236x/68/79/6d/68796df5a7d46dd889deb346b89550b4.jpg'
-  ];
   @override
   Widget build(BuildContext context) {
-    final OrderController orderController = Get.put(OrderController());
+    final OrderController cartController = Get.find<OrderController>();
+    final FavController favController = Get.find<FavController>();
     DetailsServices _services = DetailsServices();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
         leading: InkWell(onTap:(){Get.back();}, child: Icon(Icons.arrow_back_ios,color: Colors.black,size: 22,)),
         actions: [
-          Icon(Icons.search,color: Colors.black,size: 24,),
-          Gap(20),
-          InkWell(
-              onTap: (){
-                Get.toNamed('/cart',arguments: widget.details);
-              },
-              child: Icon(Icons.shopping_cart,color: Colors.black,size: 22,),
-          )
+          Obx(() => InkWell(
+            onTap: () {
+              Get.to(FavPage());
+            },
+            child: badges.Badge(
+              badgeStyle: badges.BadgeStyle(badgeColor: Colors.red),
+              position: badges.BadgePosition.topEnd(top: -13, end: -8),
+              badgeContent: Text(favController.totalItems.toString(),style: TextStyle(color: Colors.white),),
+              child: Icon(Icons.favorite),
+            ),
+          )),
+          const Gap(16),
+          Obx(() => InkWell(
+            onTap: () {
+              Get.toNamed('/cart');
+            },
+            child: badges.Badge(
+              badgeStyle: badges.BadgeStyle(badgeColor: Colors.red,),
+              position: badges.BadgePosition.topEnd(top: -13, end: -8),
+              badgeContent: Text(cartController.totalItems.toString(),style: TextStyle(color: Colors.white),),
+              child: Icon(Icons.shopping_cart),
+            ),
+          )),
+          const SizedBox(width: 16),
         ],
       ),
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Container(
-                height: 300,
-                width: double.infinity,
-                child: Image.network("${widget.details.image}",fit: BoxFit.fill,)),
+            Hero(
+              tag: widget.details.image,
+              child: Container(
+                  height: MediaQuery.of(context).size.height*0.4,
+                  width: double.infinity,
+                  child: Image.network("${widget.details.image}",fit: BoxFit.fill,)),
+            ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
@@ -78,8 +92,8 @@ class _HomeDetailsState extends State<HomeDetails> {
                   Row(
                     children: [
                       Container(
-                          height: 25,
-                          width: 50,
+                          height: MediaQuery.of(context).size.height*0.04,
+                          width: MediaQuery.of(context).size.width*0.15,
                           decoration: BoxDecoration(
                             color: Colors.black,
                             borderRadius: BorderRadius.circular(10),
@@ -102,24 +116,30 @@ class _HomeDetailsState extends State<HomeDetails> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text("\$ ${widget.details.payment}",style: TextStyle(fontSize: 27,fontWeight: FontWeight.bold),),
-                      InkWell(
-                        onTap: () {
-                          setState(() {
-                            favorite = !favorite;
-                          });
-                        },
-                        child: Container(
-                          height: 30,
-                          width: 30,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.grey.withOpacity(0.2),
-                          ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Obx(() => GestureDetector(
+                          onTap: () {
+                            favController.toggleWishlist(widget.details.id, widget.details.toMap()); // Assuming widget.details.toMap() exists
+                            if (favController.isInWishlist(widget.details.id)) {
+                              Get.snackbar('Success', 'Product added to Favorite',
+                                  snackPosition: SnackPosition.BOTTOM,
+                                  backgroundColor: Colors.black87,
+                                  colorText: Colors.white,
+                                  duration: Duration(seconds: 2));
+                            } else {
+                              Get.snackbar('Removed', 'Product removed from Favorite',
+                                  snackPosition: SnackPosition.BOTTOM,
+                                  backgroundColor: Colors.black87,
+                                  colorText: Colors.white,
+                                  duration: Duration(seconds: 2));
+                            }
+                          },
                           child: Icon(
-                            favorite ? Icons.favorite : Icons.favorite_border,
-                            size: 23,
+                            favController.isInWishlist(widget.details.id) ? Icons.favorite : Icons.favorite_border,
+                            color: favController.isInWishlist(widget.details.id) ? Colors.red : Color(0xff000814),
                           ),
-                        ),
+                        )),
                       ),
                     ],
                   ),
@@ -164,8 +184,8 @@ class _HomeDetailsState extends State<HomeDetails> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Container(
-                        height: 60,
-                        width: 110,
+                        height: MediaQuery.of(context).size.height*0.08,
+                        width: MediaQuery.of(context).size.width*0.3,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
                           border: Border.all(color: Colors.grey),
@@ -175,8 +195,8 @@ class _HomeDetailsState extends State<HomeDetails> {
                       ),
                       Container(
                         padding: EdgeInsets.all(6),
-                        height: 60,
-                        width: 110,
+                        height: MediaQuery.of(context).size.height*0.08,
+                        width: MediaQuery.of(context).size.width*0.3,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
                           border: Border.all(color: Colors.grey),
@@ -185,8 +205,8 @@ class _HomeDetailsState extends State<HomeDetails> {
                         child: Center(child: Text("No Cost \$200/month")),
                       ),
                       Container(
-                        height: 60,
-                        width: 110,
+                        height: MediaQuery.of(context).size.height*0.08,
+                        width: MediaQuery.of(context).size.width*0.3,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
                           border: Border.all(color: Colors.grey),
@@ -237,8 +257,8 @@ class _HomeDetailsState extends State<HomeDetails> {
                     children: [
                       Text("Deliver Ahmedabad - 756467",style: TextStyle(fontSize: 18),),
                       Container(
-                        height: 40,
-                        width: 100,
+                        height: MediaQuery.of(context).size.height*0.05,
+                        width: MediaQuery.of(context).size.width*0.3,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5),
                           border: Border.all(color: Colors.grey),
@@ -258,13 +278,13 @@ class _HomeDetailsState extends State<HomeDetails> {
                         Row(
                           children: [
                             Text("15 Oct,Wednesday",style: TextStyle(fontSize: 19,fontWeight: FontWeight.bold),),
-                            Gap(10),
+                            Gap(20),
                             Container(
                               height: 20,
                               width: 2,
                               color: Colors.black,
                             ),
-                            Gap(10),
+                            Gap(20),
                             Text("Free",style: TextStyle(fontSize: 19,color: Colors.green,fontWeight: FontWeight.bold),),
                             Gap(8),
                             Text("\$ 45",style: TextStyle(fontSize: 18,color: Colors.grey,decoration: TextDecoration.lineThrough),),
@@ -356,14 +376,20 @@ class _HomeDetailsState extends State<HomeDetails> {
                       Icon(Icons.arrow_forward_ios_outlined,size: 20,color: Colors.black,),
                     ],
                   ),
+                  Gap(5),
+                  Container(
+                    width: double.infinity,
+                    height: 10,
+                    color: Colors.grey.withOpacity(0.2),
+                  ),
                   Gap(10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Text("Rating & Reviews",style: TextStyle(fontSize: 19,fontWeight: FontWeight.bold),),
                       Container(
-                        height: 40,
-                        width: 100,
+                          height: MediaQuery.of(context).size.height*0.05,
+                          width: MediaQuery.of(context).size.width*0.3,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5),
                           border: Border.all(color: Colors.grey),
@@ -375,50 +401,33 @@ class _HomeDetailsState extends State<HomeDetails> {
                   ),
                   Gap(15),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("${widget.details.rating}",style: TextStyle(fontSize: 50),),
-                      Icon(Icons.star,size: 50,),
+                      Row(
+                        children: [
+                          Text("${widget.details.rating}",style: TextStyle(fontSize: 50),),
+                          Gap(10),
+                          Icon(Icons.star,size: 50,),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Container(
+                              width: MediaQuery.of(context).size.width*0.6,
+                              child: Text("60 ratings and 11 views",style: TextStyle(fontSize: 19,color: Colors.grey),maxLines: 2,)
+                          ),
+                        ],
+                      ),
                     ],
                   ),
-                  Container(
-                      width: MediaQuery.of(context).size.width*0.3,
-                      child: Text("60 ratings and 11 views",style: TextStyle(fontSize: 19,color: Colors.grey),maxLines: 2,)
-                  ),
                   Gap(20),
-                  CarouselSlider(
-                    options: CarouselOptions(
-                      height: 200,
-                      enlargeCenterPage: true,
-                      enlargeFactor: 0.8,
-                    ),
-                    items: imageUrls.map((imageUrl) {
-                      return Builder(
-                        builder: (BuildContext context) {
-                          return Container(
-                            width: MediaQuery.of(context).size.width,
-                            margin: EdgeInsets.symmetric(horizontal: 5.0),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                            ),
-                            child: Container(
-                              height: 250,
-                              width: 180,
-                              decoration: BoxDecoration(
-                                image: DecorationImage(image: NetworkImage(imageUrl),fit: BoxFit.cover,)
-                              ),
-                            ),
-                          );
-                        },
-                      );
-                    }).toList(),
-                  ),
                   Divider(),
                   Gap(20),
                   Row(
                     children: [
                       Container(
-                          height: 25,
-                          width: 50,
+                          height: MediaQuery.of(context).size.height*0.04,
+                          width: MediaQuery.of(context).size.width*0.15,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(5),
                             color: Colors.black
@@ -439,10 +448,10 @@ class _HomeDetailsState extends State<HomeDetails> {
                   Text("Factors like frequency response, impedance, and driver size influence sound quality. Higher impedance headphones generally offer better sound quality but may require more powerful audio sources."),
                   Gap(10),
                   Container(
-                    height: 150,
-                    width: 100,
+                    height: MediaQuery.of(context).size.height*0.4,
+                    width: MediaQuery.of(context).size.width*0.9,
                     decoration: BoxDecoration(
-                      image: DecorationImage(image: NetworkImage("${widget.details.image}"),fit: BoxFit.cover),
+                      image: DecorationImage(image: NetworkImage("${widget.details.image}"),fit: BoxFit.fill),
                     ),
                   ),
                   Gap(10),
@@ -485,8 +494,8 @@ class _HomeDetailsState extends State<HomeDetails> {
                   Row(
                     children: [
                       Container(
-                          height: 25,
-                          width: 50,
+                          height: MediaQuery.of(context).size.height*0.04,
+                          width: MediaQuery.of(context).size.width*0.15,
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(5),
                               color: Colors.black
@@ -541,203 +550,41 @@ class _HomeDetailsState extends State<HomeDetails> {
                       Text("Buyer - 3 months",style: TextStyle(fontSize: 18,color: Colors.grey),),
                     ],
                   ),
-                  Gap(5),
-                  Container(
-                    width: double.infinity,
-                    height: 1,
-                    color: Colors.grey,
-                  ),
-                  Row(
-                    children: [
-                      Container(
-                        height: 50,
-                        width: 190,
-                        child: GestureDetector(
-                          onTap: () {
-                            orderController.toggleDelivery(true);
-                          },
-                          child: Obx(() => Container(
-                            padding: EdgeInsets.symmetric(vertical: 12),
-                            decoration: BoxDecoration(
-                              color: orderController.isDelivery.value
-                                  ? Colors.black
-                                  : Colors.white,
-                            ),
-                            alignment: Alignment.center,
-                            child: Text(
-                              'Add To Cart',
-                              style: TextStyle(fontSize: 17,color:  orderController.isDelivery.value
-                                  ? Colors.white : Colors.black,fontWeight:  FontWeight.bold
-                              ),
-                            ),
-                          )),
-                        ),
-                      ),
-                      Container(
-                        height: 50,
-                        width: 185,
-                        child: GestureDetector(
-                          onTap: () {
-                            orderController.toggleDelivery(false);
-                          },
-                          child: Obx(() => Container(
-                            padding: EdgeInsets.symmetric(vertical: 12),
-                            decoration: BoxDecoration(
-                              color: orderController.isDelivery.value
-                                  ? Colors.white
-                                  : Colors.black,
-                            ),
-                            alignment: Alignment.center,
-                            child: Text(
-                              'Buy Now',
-                              style: TextStyle(fontSize: 17,color:  orderController.isDelivery.value
-                                  ? Colors.black
-                                  : Colors.white,fontWeight:  FontWeight.bold,
-                              ),
-                            ),
-                          )),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Container(
-                    width: double.infinity,
-                    height: 10,
-                    color: Colors.grey.withOpacity(0.2),
-                  ),
-                  Gap(20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text("Similar Products",style: TextStyle(fontSize: 24),),
-                    ],
-                  ),
-                  Gap(40),
-                  Container(
-                    width: double.infinity,
-                    height: 1,
-                    color: Colors.grey,
-                  ),
-                  StreamBuilder<List<ThirdModel>>(
-                    stream: _services.fetchItems(),
-                    builder: (context,snapshot){
-                      if (snapshot.hasError) {
-                        return Center(child: Text('Error: ${snapshot.error}'));
+                  Gap(10),
+                  GestureDetector(
+                    onTap: () {
+                      bool added = cartController.addToCart(widget.details);
+                      if (added) {
+                        Get.snackbar(
+                          'Added to Cart',
+                          'Product added to cart successfully',
+                          snackPosition: SnackPosition.BOTTOM,
+                          backgroundColor: Colors.black87,
+                          colorText: Colors.white,
+                          duration: Duration(seconds: 2),
+                        );
+                      } else {
+                        Get.snackbar(
+                          'Product exist',
+                          'Product is already in the cart',
+                          snackPosition: SnackPosition.BOTTOM,
+                          backgroundColor: Colors.black87,
+                          colorText: Colors.white,
+                          duration: Duration(seconds: 2),
+                        );
                       }
-                      if (!snapshot.hasData) {
-                        return Center(child: CircularProgressIndicator());
-                      }
-                      final Products = snapshot.data!;
-                      return GridView.builder(
-                        shrinkWrap: true,
-                        physics:NeverScrollableScrollPhysics(),
-                        itemCount: Products.length,
-                        gridDelegate:SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 0,
-                          mainAxisSpacing: 0,
-                          childAspectRatio: 0.52,
-                        ),
-                        itemBuilder: (context, index) {
-                          final product = Products[index];
-                          return Container(
-                            padding: EdgeInsets.all(3),
-                            height: 500,
-                            width: 340,
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey)
-                            ),
-                            child: Column(
-                              children: [
-                                Container(
-                                  height: 200,
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: NetworkImage(product.image),
-                                      fit: BoxFit.fill,
-                                    ),
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        height: 24,
-                                        width: 50,
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(6),
-                                          color: Colors.black,
-                                        ),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Text(product.rating, style:TextStyle(color: Colors.white),),
-                                            Gap(4),
-                                            Icon(Icons.star, color: Colors.white, size: 20,),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  padding:EdgeInsets.all(5),
-                                  height: 150,
-                                  width: double.infinity,
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        product.name,
-                                        style:TextStyle(fontSize: 20),
-                                        maxLines: 2,
-                                      ),
-                                      Gap(4),
-                                      Row(
-                                        children: [
-                                          Text(
-                                            product.payment,
-                                            style:TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          Text(
-                                            product.pay,
-                                            style:TextStyle(
-                                              fontSize: 15,
-                                              color: Colors.grey,
-                                              decoration:
-                                              TextDecoration.lineThrough,
-                                            ),
-                                          ),
-                                          Gap(3),
-                                          Text(
-                                            product.discount,
-                                            style:TextStyle(
-                                                fontSize: 17,
-                                                color: Colors.green,fontWeight: FontWeight.bold
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Gap(5),
-                                      Row(
-                                        children: [
-                                          Icon(Icons.discount),
-                                          Gap(5),
-                                          Text("Exchange Offers",style: TextStyle(fontSize: 16),),
-                                        ],
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      );
                     },
+                    child: Container(
+                      height: MediaQuery.of(context).size.height*0.06,
+                      width: MediaQuery.of(context).size.width*0.99,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.black,
+                      ),
+                      child:Center(child: Text("ADD TO CART",style: mystyle(18,Colors.white,FontWeight.bold),))
+                    ),
                   ),
+                  Gap(6),
                 ],
               ),
             ),
