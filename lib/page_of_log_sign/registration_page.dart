@@ -251,7 +251,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                                     SizedBox(height: 20),
                                     InkWell(
                                         onTap: (){
-                                          Get.to('/log');
+                                          Get.toNamed('/log');
                                         },
                                         child: Text("Sign In",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),)),
                                   ],

@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      initialRoute: '/home',
+      initialRoute: '/cover',
       getPages: [
         GetPage(name: '/fav', page: ()=>FavPage(),
         binding:  FavControllerBinding()),

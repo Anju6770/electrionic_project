@@ -138,7 +138,7 @@ class _LoginPageState extends State<LoginPage> {
                               backgroundColor: Colors.white,
                               "Success",
                               "Sign In Successful");
-                          Get.offAllNamed('/cover');
+                          Get.offAllNamed('/home');
                         } else {
                           Get.snackbar(
                             backgroundColor: Colors.white,
