@@ -496,7 +496,7 @@ class _HomePageState extends State<HomePage> {
                                               Text(
                                                 product.discount,
                                                 style:TextStyle(
-                                                  fontSize: 17,
+                                                  fontSize: 16,
                                                   color: Colors.green,fontWeight: FontWeight.bold
                                                 ),
                                               ),

@@ -96,7 +96,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
                         Text("+975 -",style: TextStyle(fontSize: 18),),
                         Gap(5),
                         Container(
-                          width: MediaQuery.of(context).size.width*0.7,
+                          width: MediaQuery.of(context).size.width*0.68,
                           child: TextFormField(
                             controller: _phoneController,
                             keyboardType: TextInputType.phone,
