@@ -93,7 +93,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
                     Gap(10),
                     Row(
                       children: [
-                        Text("+975 -",style: TextStyle(fontSize: 18),),
+                        Text("+975-",style: TextStyle(fontSize: 18),),
                         Gap(5),
                         Container(
                           width: MediaQuery.of(context).size.width*0.68,

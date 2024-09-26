@@ -12,7 +12,7 @@ class FavPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        leading: InkWell(onTap:(){Get.toNamed('/button');}, child: Icon(Icons.arrow_back_ios,color: Colors.black,size: 22,)),
+        leading: InkWell(onTap:(){Get.back();}, child: Icon(Icons.arrow_back_ios,color: Colors.black,size: 22,)),
         title: Text("Favorite",style: TextStyle(fontSize: 26,fontWeight: FontWeight.bold),),
         centerTitle: true,
       ),
