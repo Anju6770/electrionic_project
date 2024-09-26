@@ -53,4 +53,11 @@ class OrderController extends GetxController {
   void toggleDelivery(bool value) {
     isDelivery.value = value;
   }
+
+  int currentIndex = 0;
+
+  void setCurrentIndex(int index) {
+    currentIndex = index;
+    update(); // Notify listeners to rebuild
+  }
 }

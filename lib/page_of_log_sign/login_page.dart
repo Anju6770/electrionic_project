@@ -1,4 +1,6 @@
+import 'package:electrionic_project/Main_page/services.dart';
 import 'package:electrionic_project/auth_services/auth.dart';
+import 'package:electrionic_project/model/cover_last.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +28,7 @@ class _LoginPageState extends State<LoginPage> {
   bool _isPasswordObscured = true;
   @override
   Widget build(BuildContext context) {
+    Services _services = Services();
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
@@ -33,20 +36,33 @@ class _LoginPageState extends State<LoginPage> {
           width: double.infinity,
           child: Column(
             children: [
-              FutureBuilder(
-                future: Future.wait([
-                  _getImage("ele_cover-removebg-preview.png"),
-                ]),
-                builder: (BuildContext context, AsyncSnapshot<List<Widget>> snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (snapshot.hasError) {
-                    return const Center(child: Text("Error loading images"));
-                  } else {
-                    return Column(
-                      children: snapshot.data!,
-                    );
+              StreamBuilder<List<CoverLast>>(
+                stream: _services.fetchlog(),
+                builder: (context,snapshot){
+                  if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
                   }
+                  if (!snapshot.hasData) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  final logo = snapshot.data!;
+                  return SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.45,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      shrinkWrap: true,
+                      itemCount: logo.length,
+                      itemBuilder: (context, index) {
+                        final logos = logo[index];
+                        return Column(
+                          children: [
+                            Image(image: NetworkImage("${logos.image}"),fit: BoxFit.cover,),
+
+                          ],
+                        );
+                      },
+                    ),
+                  );
                 },
               ),
               Container(
@@ -135,16 +151,50 @@ class _LoginPageState extends State<LoginPage> {
                             _emailController.text, _passwordController.text);
                         if (user != null) {
                           Get.snackbar(
-                              backgroundColor: Colors.white,
+                            "Success",
+                            "Sign In Successful",
+                            backgroundColor: Colors.black,
+                            titleText: Text(
                               "Success",
-                              "Sign In Successful");
-                          Get.offAllNamed('/home');
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                              ),
+                            ),
+                            messageText: Text(
+                              "Sign In Successful",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                              ),
+                            ),
+                            colorText: Colors.white,
+                          );
+                          Get.offAllNamed('/button');
                         } else {
                           Get.snackbar(
-                            backgroundColor: Colors.white,
                             "Sorry",
                             "Your email or Password may be wrong",
+                            backgroundColor: Colors.black,
+                            titleText: Text(
+                              "Sorry",
+                              style: TextStyle(
+                                color: Colors.red,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                              ),
+                            ),
+                            messageText: Text(
+                              "Your email or Password may be wrong",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                              ),
+                            ),
+                            colorText: Colors.white,
                           );
+
                         }
                       },
                       child: Row(
@@ -165,28 +215,36 @@ class _LoginPageState extends State<LoginPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text("Or Sign In with goggle",style: TextStyle(fontSize: 14),),
-                          Container(
-                            height: 50,
-                            width: 50,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(40),
-                            ),
-                            child: FutureBuilder(
-                              future: Future.wait([
-                                _getImage("goggle.jpg"),
-                              ]),
-                              builder: (BuildContext context, AsyncSnapshot<List<Widget>> snapshot) {
-                                if (snapshot.connectionState == ConnectionState.waiting) {
-                                  return const Center(child: CircularProgressIndicator());
-                                } else if (snapshot.hasError) {
-                                  return const Center(child: Text("Error loading images"));
-                                } else {
-                                  return Column(
-                                    children: snapshot.data!,
-                                  );
-                                }
-                              },
-                            ),
+                          Gap(10),
+                          StreamBuilder<List<CoverLast>>(
+                            stream: _services.fetchlog(),
+                            builder: (context,snapshot){
+                              if (snapshot.hasError) {
+                                return Center(child: Text('Error: ${snapshot.error}'));
+                              }
+                              if (!snapshot.hasData) {
+                                return Center(child: CircularProgressIndicator());
+                              }
+                              final logo = snapshot.data!;
+                              return SizedBox(
+                                height: MediaQuery.of(context).size.height * 0.05,
+                                child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  shrinkWrap: true,
+                                  itemCount: logo.length,
+                                  itemBuilder: (context, index) {
+                                    final logos = logo[index];
+                                    return Container(
+                                        height: 50,
+                                        width: 50,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(40),
+                                          image: DecorationImage(image: NetworkImage("${logos.image1}"),fit: BoxFit.fill,)),
+                                        );
+                                  },
+                                ),
+                              );
+                            },
                           ),
                         ],
                       ),

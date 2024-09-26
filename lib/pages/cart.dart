@@ -1,5 +1,4 @@
 import 'package:electrionic_project/ManageState/order_controller.dart';
-import 'package:electrionic_project/model/home.dart';
 import 'package:electrionic_project/time_pass/Constant/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -20,7 +19,7 @@ class _CartState extends State<Cart> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        leading: InkWell(onTap:(){Get.back();}, child: Icon(Icons.arrow_back_ios,color: Colors.black,size: 22,)),
+        leading: InkWell(onTap:(){Get.toNamed('/button');}, child: Icon(Icons.arrow_back_ios,color: Colors.black,size: 22,)),
         title: Text("Cart",style: TextStyle(fontSize: 26,fontWeight: FontWeight.bold),),
         centerTitle: true,
       ),

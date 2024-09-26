@@ -49,4 +49,11 @@ class FavController extends GetxController {
   }
 
   String get totalItems => favItems.length.toString();
+
+  int currentIndex = 0;
+
+  void setCurrentIndex(int index) {
+    currentIndex = index;
+    update(); // Notify listeners to rebuild
+  }
 }

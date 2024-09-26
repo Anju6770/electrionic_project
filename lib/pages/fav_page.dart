@@ -1,5 +1,4 @@
 import 'package:electrionic_project/ManageState/fav_controller.dart';
-import 'package:electrionic_project/time_pass/Constant/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
@@ -13,7 +12,7 @@ class FavPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        leading: InkWell(onTap:(){Get.back();}, child: Icon(Icons.arrow_back_ios,color: Colors.black,size: 22,)),
+        leading: InkWell(onTap:(){Get.toNamed('/button');}, child: Icon(Icons.arrow_back_ios,color: Colors.black,size: 22,)),
         title: Text("Favorite",style: TextStyle(fontSize: 26,fontWeight: FontWeight.bold),),
         centerTitle: true,
       ),

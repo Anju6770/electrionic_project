@@ -1,10 +1,10 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:electrionic_project/Main_page/services.dart';
-import 'package:electrionic_project/ManageState/fav_controller.dart';
-import 'package:electrionic_project/ManageState/order_controller.dart';
-import 'package:electrionic_project/auth_services/auth.dart';
+import 'package:electrionic_project/data/sign%20in_list.dart';
 import 'package:electrionic_project/model/home.dart';
+import 'package:electrionic_project/model/inside_logo.dart';
+import 'package:electrionic_project/pages/search_product.dart';
 import 'package:electrionic_project/time_pass/Constant/constants.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +22,6 @@ class _HomePageState extends State<HomePage> {
   late String image;
 
   final storage = FirebaseStorage.instance;
-  AuthServices _auth = AuthServices();
 
   @override
   void initState() {
@@ -38,15 +37,148 @@ class _HomePageState extends State<HomePage> {
       image = url;
     });
   }
-
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
-    final OrderController cartController = Get.find<OrderController>();
-    final FavController favController = Get.find<FavController>();
     final CollectionReference one = FirebaseFirestore.instance.collection("first");
     final CollectionReference second = FirebaseFirestore.instance.collection("second");
     Services _services = Services();
     return Scaffold(
+      key: _scaffoldKey,
+      endDrawer: Drawer(
+        child: Column(
+          children: [
+            UserAccountsDrawerHeader(
+              accountName: Row(
+                children: [
+                  Text(
+                    '${userData[0].firstName}',
+                    style: mystyle(25,Colors.white,FontWeight.bold),
+                  ),
+                  Gap(10),
+                  Text(
+                    '${userData[0].lastName}',
+                    style: mystyle(25,Colors.white,FontWeight.bold),
+                  ),
+                ],
+              ),
+              accountEmail: Text('${userData[0].email}', style: mystyle(25,Colors.white,FontWeight.bold),),
+              currentAccountPicture: Container(
+                height: 80,
+                width: 50,
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(image: AssetImage('assets/image/pro.jpg',),fit: BoxFit.cover)
+                ),
+              ),
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.8),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(15),
+              child: Column(
+                children: [
+                  ListTile(
+                    onTap: (){
+                      Get.toNamed('/profile');
+                    },
+                    leading: Icon(
+                      Icons.portrait_rounded,
+                      size: 35,
+                    ),
+                    title: Text(
+                      "My Profile",
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  ),
+                  ListTile(
+                    onTap: (){
+                      Get.toNamed('/setting');
+                    },
+                    leading: Icon(
+                      Icons.settings_outlined,
+                      size: 35,
+                    ),
+                    title: Text(
+                      "Settings",
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  ),
+                  ListTile(
+                    leading: Icon(
+                      Icons.lock_outline,
+                      size: 35,
+                    ),
+                    title: Text(
+                      "Privacy and Security",
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  ),
+                  ListTile(
+                    leading: Icon(
+                      Icons.question_answer_outlined,
+                      size: 35,
+                    ),
+                    title: Text(
+                      "Help and Feedback",
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            MaterialButton(
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          AlertDialog(
+                            backgroundColor: Colors.black,
+                            title: Text("Do you want to Log Out?",style: TextStyle(color: Colors.white,fontSize: 20),),
+                            actions: [
+                              TextButton(
+                                  onPressed: () {
+                                    Get.offAllNamed('/log');
+                                  },
+                                  child: Text(
+                                    "Yes",
+                                    style: mystyle(19,Colors.white),
+                                  )),
+                              SizedBox(
+                                width: 120,
+                              ),
+                              TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text(
+                                    "No",
+                                    style: mystyle(19,Colors.white),
+                                  ))
+                            ],
+                          ),
+                        ],
+                      );
+                    });
+              },
+              child: ListTile(
+                leading: Icon(
+                  Icons.logout,
+                  size: 35,color: Colors.red,
+                ),
+                title: Text(
+                  "Log Out",
+                  style: TextStyle(fontSize: 20),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
       body: StreamBuilder<QuerySnapshot>(
         stream: one.snapshots(),
         builder: (context, snapshot) {
@@ -67,39 +199,65 @@ class _HomePageState extends State<HomePage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Container(
-                          height: MediaQuery.of(context).size.height*0.05,
-                          width: MediaQuery.of(context).size.width*0.5,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: NetworkImage(image),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
+                        StreamBuilder<List<InsideLogo>>(
+                          stream: _services.fetchinside(),
+                          builder: (context,snapshot){
+                            if (snapshot.hasError) {
+                              return Center(child: Text('Error: ${snapshot.error}'));
+                            }
+                            if (!snapshot.hasData) {
+                              return Center(child: CircularProgressIndicator());
+                            }
+                            final logo = snapshot.data!;
+                            return SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.06,
+                              child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                shrinkWrap: true,
+                                itemCount: logo.length,
+                                itemBuilder: (context, index) {
+                                  final logos = logo[index];
+                                  return Container(
+                                    width: MediaQuery.of(context).size.width * 0.6,
+                                    decoration: BoxDecoration(
+                                        image: DecorationImage(image: NetworkImage("${logos.image}"),fit: BoxFit.cover,)),
+                                  );
+                                },
+                              ),
+                            );
+                          },
                         ),
                         Row(
                           children:[
                             Gap(10),
                             Icon(Icons.notifications, size: 25),
                             Gap(10),
-                            Icon(Icons.menu, size: 25),
+                            InkWell(
+                                onTap: () {
+                                  _scaffoldKey.currentState!.openEndDrawer();
+                                },
+                                child: Icon(Icons.menu, size: 25)),
                           ],
                         ),
                       ],
                     ),
-                    Card(
-                      elevation: 3.5,
-                      child: Container(
-                        padding:EdgeInsets.all(6),
-                        height: MediaQuery.of(context).size.height * 0.06,
-                        width: MediaQuery.of(context).size.width * 0.9,
-                        child: TextFormField(
-                          style:TextStyle(fontSize: 18),
-                          decoration:InputDecoration(
-                            hintText: 'Search...',
-                            suffixIcon: Icon(Icons.search, size: 30),
-                            border: InputBorder.none,
-                          ),
+                    InkWell(
+                      onTap: (){
+                        Get.to(SearchDoc());
+                      },
+                      child: Card(
+                        elevation: 3.5,
+                        child: Container(
+                          padding:EdgeInsets.all(10),
+                          height: MediaQuery.of(context).size.height * 0.06,
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text("Search...",style: TextStyle(fontSize: 20,color: Colors.black54),),
+                              Icon(Icons.search,size: 25,color: Colors.black54,)
+                            ],
+                          )
                         ),
                       ),
                     ),
