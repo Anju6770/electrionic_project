@@ -27,14 +27,17 @@ class _PaymentPageState extends State<PaymentPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        leading: InkWell(onTap: (){Get.back();}, child: Icon(Icons.arrow_back_ios,size: 25,)),
+        backgroundColor: Colors.white,
+        iconTheme: IconThemeData(
+            color: Colors.black,size: 27
+        ),
         title: Text(
           "Payment Information",
           style: mystyle(29,),
         ),
         centerTitle: true,
-        iconTheme: IconThemeData(size: 27,),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),

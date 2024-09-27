@@ -25,14 +25,17 @@ class _DeliveryPageState extends State<DeliveryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: InkWell(onTap: (){Get.back();}, child: Icon(Icons.arrow_back_ios)),
+        backgroundColor: Colors.white,
+        iconTheme: IconThemeData(
+            color: Colors.black,size: 27
+        ),
         title: Text(
           "Delivery Information",
           style: mystyle(27,),
         ),
         centerTitle: true,
-        iconTheme: IconThemeData(size: 27),
       ),
+      backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child:Padding(
           padding: const EdgeInsets.all(30),

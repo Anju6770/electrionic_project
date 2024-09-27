@@ -24,11 +24,8 @@ class _SettingPagesState extends State<SettingPages> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: InkWell(
-          onTap: () {
-            Navigator.of(context).pop();
-          },
-          child: Icon(Icons.arrow_back_ios),
+        iconTheme: IconThemeData(
+            color: Colors.black,size: 27
         ),
         title: Text("Setting", style: mystyle(25, Colors.black, FontWeight.bold)),
         centerTitle: true,
@@ -92,7 +89,7 @@ class _SettingPagesState extends State<SettingPages> {
                 children: [
                   Container(
                     padding: EdgeInsets.all(10),
-                    height: MediaQuery.of(context).size.height * 0.2,
+                    height: MediaQuery.of(context).size.height * 0.23,
                     width: MediaQuery.of(context).size.width * 0.9,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),

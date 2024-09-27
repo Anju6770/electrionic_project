@@ -133,35 +133,36 @@ class _HomePageState extends State<HomePage> {
                 showDialog(
                     context: context,
                     builder: (context) {
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          AlertDialog(
-                            backgroundColor: Colors.black,
-                            title: Text("Do you want to Log Out?",style: TextStyle(color: Colors.white,fontSize: 20),),
-                            actions: [
-                              TextButton(
-                                  onPressed: () {
-                                    Get.offAllNamed('/log');
-                                  },
-                                  child: Text(
-                                    "Yes",
-                                    style: mystyle(19,Colors.white),
-                                  )),
-                              SizedBox(
-                                width: 120,
-                              ),
-                              TextButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: Text(
-                                    "No",
-                                    style: mystyle(19,Colors.white),
-                                  ))
-                            ],
-                          ),
-                        ],
+                      return Container(
+                        height: MediaQuery.of(context).size.height*0.5,
+                        width: MediaQuery.of(context).size.width*0.9,
+                        child: AlertDialog(
+                          backgroundColor: Colors.black,
+                          title: Text("Do you want to Log Out?",style: TextStyle(color: Colors.white,fontSize: 20),),
+                          actions: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                TextButton(
+                                    onPressed: () {
+                                      Get.offAllNamed('/log');
+                                    },
+                                    child: Text(
+                                      "Yes",
+                                      style: mystyle(19,Colors.white),
+                                    )),
+                                TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text(
+                                      "No",
+                                      style: mystyle(19,Colors.white),
+                                    )),
+                              ],
+                            )
+                          ],
+                        ),
                       );
                     });
               },

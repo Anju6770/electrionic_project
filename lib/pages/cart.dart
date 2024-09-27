@@ -19,7 +19,9 @@ class _CartState extends State<Cart> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        leading: InkWell(onTap:(){Get.back();}, child: Icon(Icons.arrow_back_ios,color: Colors.black,size: 22,)),
+        iconTheme: IconThemeData(
+          color: Colors.black,size: 27
+        ),
         title: Text("Cart",style: TextStyle(fontSize: 26,fontWeight: FontWeight.bold),),
         centerTitle: true,
       ),

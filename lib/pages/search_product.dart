@@ -58,7 +58,9 @@ class _SearchDocState extends State<SearchDoc> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: InkWell(onTap: (){Get.back();}, child: Icon(Icons.arrow_back_ios,size: 25,)),
+        iconTheme: IconThemeData(
+            color: Colors.black,size: 27
+        ),
         title: Text('Search Products',style: mystyle(30),),
         centerTitle: true,
       ),

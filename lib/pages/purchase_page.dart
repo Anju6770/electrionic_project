@@ -16,10 +16,12 @@ class _PurchasePageState extends State<PurchasePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: InkWell(onTap: (){Get.offAllNamed('home');}, child: Icon(Icons.arrow_back_ios,size: 25,)),
+        backgroundColor: Colors.white,
+        leading: InkWell(onTap: (){Get.offAllNamed('button');}, child: Icon(Icons.arrow_back,size: 27,)),
         title: Text("Order Tracking",style: mystyle(30),),
         centerTitle: true,
       ),
+      backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(10),
