@@ -16,7 +16,7 @@ class _PurchasePageState extends State<PurchasePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: InkWell(onTap: (){Get.back();}, child: Icon(Icons.arrow_back_ios,size: 25,)),
+        leading: InkWell(onTap: (){Get.offAllNamed('home');}, child: Icon(Icons.arrow_back_ios,size: 25,)),
         title: Text("Order Tracking",style: mystyle(30),),
         centerTitle: true,
       ),
