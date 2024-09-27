@@ -346,7 +346,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                                 children: [
                                   Text(
                                     "Sorry",
-                                    style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                                    style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold,color: Colors.red),
                                   ),
                                   SizedBox(height: 10),
                                   Text("There has been a problem, try again.",style: TextStyle(fontSize: 23),),
