@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
+import 'package:url_launcher/url_launcher.dart';
 class PurchasePage extends StatefulWidget {
   const PurchasePage({super.key});
 
@@ -16,36 +17,57 @@ class _PurchasePageState extends State<PurchasePage> {
     return Scaffold(
       appBar: AppBar(
         leading: InkWell(onTap: (){Get.back();}, child: Icon(Icons.arrow_back_ios,size: 25,)),
-        title: Text("Purchase",style: mystyle(30),),
+        title: Text("Order Tracking",style: mystyle(30),),
         centerTitle: true,
       ),
-      body: Center(
-        child: Column(
-          children: [
-            Gap(60),
-            Lottie.asset('assets/lottie/Animation - 1727244628436.json', height: 200),
-            Text("Products is on the way",style: mystyle(30),),
-            Gap(30),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Text("Delivery by ",style: TextStyle(fontSize: 18),),
-                  Text("Soname Dorji",style: TextStyle(fontSize: 19,fontWeight: FontWeight.bold),),
-                  Gap(25),
-                  Container(
-                    height: 20,
-                    width: 2,
-                    color: Colors.black,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Center(
+            child: Column(
+              children: [
+                Text("ORDER PLACED",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+                Text("Your order is placed sucessfully",style: TextStyle(color: Colors.grey,fontSize: 18),),
+                Gap(4),
+                Container(
+                  height: MediaQuery.of(context).size.height*0.13,
+                  width: MediaQuery.of(context).size.width*0.4,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(image: AssetImage("assets/image/gift.png"))
                   ),
-                  Gap(25),
-                  Text("Free",style: TextStyle(fontSize: 19,color: Colors.green,fontWeight: FontWeight.bold),),
-                  Gap(8),
-                  Text("\$ 45",style: TextStyle(fontSize: 18,color: Colors.grey,decoration: TextDecoration.lineThrough),),
-                ],
-              ),
+                ),
+                Gap(20),
+                Text("ON THE WAY",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+                Text("Soon the products will be Delivered",style: TextStyle(color: Colors.grey,fontSize: 18),),
+                Container(
+                  height: MediaQuery.of(context).size.height*0.15,
+                  width: MediaQuery.of(context).size.width*0.4,
+                  decoration: BoxDecoration(
+                      image: DecorationImage(image: AssetImage("assets/image/car.png"),fit: BoxFit.cover)
+                  ),
+                ),
+                Gap(20),
+                Text("PRODUCT DELIVERED",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+                Text("We will deliver your product",style: TextStyle(color: Colors.grey,fontSize: 18),),
+                Gap(4),
+                Container(
+                  height: MediaQuery.of(context).size.height*0.13,
+                  width: MediaQuery.of(context).size.width*0.4,
+                  decoration: BoxDecoration(
+                      image: DecorationImage(image: AssetImage("assets/image/opened_gift.png"))
+                  ),
+                ),
+                Gap(20),
+                InkWell(
+                    onTap:(){
+                      launchUrl(
+                        Uri.parse("tel: +975-77665544"),
+                      );
+                    },
+                    child: Text("HELP LINE: +975-77665544",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),)),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

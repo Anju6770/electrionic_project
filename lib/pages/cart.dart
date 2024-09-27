@@ -34,7 +34,7 @@ class _CartState extends State<Cart> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    height: 130,
+                    height: MediaQuery.of(context).size.height*0.2,
                     width: MediaQuery.of(context).size.width*0.7,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -46,8 +46,8 @@ class _CartState extends State<Cart> {
                     ),
                   ),
                   Container(
-                    height: 40,
-                    width: 100,
+                    height: MediaQuery.of(context).size.height*0.06,
+                    width: MediaQuery.of(context).size.width*0.25,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5),
                       border: Border.all(color: Colors.grey),
@@ -222,7 +222,7 @@ class _CartState extends State<Cart> {
                     width: 2,
                     color: Colors.black,
                   ),
-                  Gap(25),
+                  Gap(20),
                   Text("Free",style: TextStyle(fontSize: 19,color: Colors.green,fontWeight: FontWeight.bold),),
                   Gap(8),
                   Text("\$ 45",style: TextStyle(fontSize: 18,color: Colors.grey,decoration: TextDecoration.lineThrough),),

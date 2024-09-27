@@ -18,11 +18,6 @@ class _PhoneState extends State<Phone> {
         backgroundColor: Colors.white,
         leading: InkWell(onTap:(){Get.back();}, child: Icon(Icons.arrow_back_ios,color: Colors.black,size: 22,)),
         title: Text("Phones",style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 26),),
-        actions: [
-          Icon(Icons.search,color: Colors.black,size: 24,),
-          Gap(15),
-          Icon(Icons.shopping_cart,color: Colors.black,size: 22,),
-        ],
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -96,7 +91,7 @@ class _PhoneState extends State<Phone> {
                         return Column(
                           children: [
                             Container(
-                                height: 400,
+                                height: MediaQuery.of(context).size.height*0.55,
                                 width: double.infinity,
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -104,8 +99,8 @@ class _PhoneState extends State<Phone> {
                                     Row(
                                       children: [
                                         Container(
-                                            height: 230,
-                                            width: 150,
+                                            height: MediaQuery.of(context).size.height*0.3,
+                                            width: MediaQuery.of(context).size.width*0.37,
                                             decoration: BoxDecoration(
                                               image: DecorationImage(image: NetworkImage("${phone['image']}"),fit: BoxFit.cover)
                                             ),
@@ -115,15 +110,15 @@ class _PhoneState extends State<Phone> {
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Container(
-                                              width: MediaQuery.of(context).size.width*0.5,
-                                              child: Text("${phone['name']}",style: TextStyle(fontSize: 19),maxLines: 2,),
+                                              width: MediaQuery.of(context).size.width*0.44,
+                                              child: Text("${phone['name']}",style: TextStyle(fontSize: 19),maxLines: 6,),
                                             ),
                                             Gap(10),
                                             Row(
                                               children: [
                                                 Container(
-                                                  height: 25,
-                                                  width: 50,
+                                                  height: MediaQuery.of(context).size.height*0.04,
+                                                  width: MediaQuery.of(context).size.width*0.15,
                                                   decoration: BoxDecoration(
                                                     borderRadius: BorderRadius.circular(10),
                                                     color: Colors.black
@@ -146,10 +141,10 @@ class _PhoneState extends State<Phone> {
                                                 Text(
                                                   "\$ ${phone['payment']}",
                                                   style:TextStyle(
-                                                      fontSize: 20,
+                                                      fontSize: 19,
                                                       fontWeight: FontWeight.bold),
                                                 ),
-                                                Gap(6),
+                                                Gap(5),
                                                 Text(
                                                   "\$ ${phone['pay']}",
                                                   style:TextStyle(
@@ -189,8 +184,8 @@ class _PhoneState extends State<Phone> {
                                       children: [
                                         Container(
                                           padding: EdgeInsets.all(4),
-                                          height: 45,
-                                          width: 180,
+                                          height: MediaQuery.of(context).size.height*0.06,
+                                          width: MediaQuery.of(context).size.width*0.45,
                                           decoration: BoxDecoration(
                                             borderRadius: BorderRadius.circular(10),
                                             color: Colors.grey.withOpacity(0.2),
@@ -200,8 +195,8 @@ class _PhoneState extends State<Phone> {
                                         Gap(10),
                                         Container(
                                           padding: EdgeInsets.all(4),
-                                          height: 45,
-                                          width: 180,
+                                          height: MediaQuery.of(context).size.height*0.06,
+                                          width: MediaQuery.of(context).size.width*0.46,
                                           decoration: BoxDecoration(
                                             borderRadius: BorderRadius.circular(10),
                                             color: Colors.grey.withOpacity(0.2),
@@ -213,7 +208,7 @@ class _PhoneState extends State<Phone> {
                                     Gap(10),
                                     Container(
                                       padding: EdgeInsets.all(6),
-                                      height: 40,
+                                      height: MediaQuery.of(context).size.height*0.045,
                                       width: 350,
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(10),
@@ -221,7 +216,7 @@ class _PhoneState extends State<Phone> {
                                       ),
                                       child: Text("${phone['explain3']}"),
                                     ),
-                                    Gap(30),
+                                    Gap(20),
                                     Divider()
                                   ],
                                 )),

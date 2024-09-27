@@ -51,7 +51,7 @@ class _PaymentPageState extends State<PaymentPage> {
                 style: TextStyle(fontSize: 25,color:  Colors.black,fontWeight:  FontWeight.bold),
               ),
               Text(
-                'Contact: ${customer[0].phoneNo}',
+                'Contact:+975-${customer[0].phoneNo}',
                 style: TextStyle(fontSize: 25,color:  Colors.black,fontWeight:  FontWeight.bold),
               ),
               Text(

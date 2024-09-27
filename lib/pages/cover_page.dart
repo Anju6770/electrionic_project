@@ -1,4 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:electrionic_project/Main_page/services.dart';
+import 'package:electrionic_project/model/cover_first.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -12,13 +14,7 @@ class CoverPage extends StatefulWidget {
 }
 
 class _CoverPageState extends State<CoverPage> {
-  final storage = FirebaseStorage.instance;
 
-  Future<Widget> _getImage(String imageName) async {
-    final ref = storage.ref().child(imageName);
-    final url = await ref.getDownloadURL();
-    return Image.network(url,fit: BoxFit.cover,);
-  }
   final List<String> textList = [
     'We Provide The Best Electronic Products',
     'You will be able to find a wide selection of electronics from top brands',
@@ -30,32 +26,42 @@ class _CoverPageState extends State<CoverPage> {
 
   @override
   Widget build(BuildContext context) {
+    Services _services = Services();
     return Scaffold(
       backgroundColor: Colors.black,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-            height: 300,
-            width: 350,
-            decoration: BoxDecoration(
-            ),
-            child: FutureBuilder(
-              future: Future.wait([
-                _getImage("ele_cover-removebg-preview.png"),
-              ]),
-              builder: (BuildContext context, AsyncSnapshot<List<Widget>> snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return const Center(child: Text("Error loading images"));
-                } else {
-                  return Column(
-                    children: snapshot.data!,
-                  );
-                }
-              },
-            ),
+          StreamBuilder<List<CoverFirst>>(
+            stream: _services.fetchsign(),
+            builder: (context,snapshot){
+              if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              }
+              if (!snapshot.hasData) {
+                return Center(
+                  child: CircularProgressIndicator(color: Colors.white,),
+                );
+              }
+              final logo = snapshot.data!;
+              return SizedBox(
+                height: MediaQuery.of(context).size.height * 0.45,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  shrinkWrap: true,
+                  itemCount: logo.length,
+                  itemBuilder: (context, index) {
+                    final logos = logo[index];
+                    return Column(
+                      children: [
+                        Image(image: NetworkImage("${logos.image}"),fit: BoxFit.cover,),
+
+                      ],
+                    );
+                  },
+                ),
+              );
+            },
           ),
           CarouselSlider(
             items: textList.map((e) {
@@ -86,7 +92,7 @@ class _CoverPageState extends State<CoverPage> {
           InkWell(
             onTap: () {
               if (_currentIndex == textList.length - 1) {
-                Get.toNamed('/signup');
+                Get.offAllNamed('/signup');
               } else {
                 int nextIndex = (_currentIndex + 1) % textList.length;
                 _carouselController.animateToPage(nextIndex);
