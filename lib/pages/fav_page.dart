@@ -1,4 +1,5 @@
 import 'package:electrionic_project/ManageState/fav_controller.dart';
+import 'package:electrionic_project/time_pass/Constant/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
@@ -15,7 +16,7 @@ class FavPage extends StatelessWidget {
         iconTheme: IconThemeData(
             color: Colors.black,size: 27
         ),
-        title: Text("Favorite",style: TextStyle(fontSize: 26,fontWeight: FontWeight.bold),),
+        title: Text("Favorite",style: mystyle(28),),
         centerTitle: true,
       ),
       backgroundColor: Colors.white,

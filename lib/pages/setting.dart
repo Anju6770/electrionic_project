@@ -27,7 +27,7 @@ class _SettingPagesState extends State<SettingPages> {
         iconTheme: IconThemeData(
             color: Colors.black,size: 27
         ),
-        title: Text("Setting", style: mystyle(25, Colors.black, FontWeight.bold)),
+        title: Text("Setting", style: mystyle(28)),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -49,13 +49,13 @@ class _SettingPagesState extends State<SettingPages> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("Account Settings", style: mystyle(22, Colors.black, FontWeight.bold)),
+                        Text("Account Settings", style: TextStyle(fontSize: 22,color:  Colors.black,fontWeight:  FontWeight.bold)),
                         Gap(15),
-                        Text("Profile Information", style: mystyle(19, Colors.black, FontWeight.bold)),
+                        Text("Profile Information", style: TextStyle(fontSize: 19,)),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text("Change your Personal Information", style: mystyle(16, Colors.black.withOpacity(0.6))),
+                            Text("Change your Personal Information", style: TextStyle(fontSize: 16,color:  Colors.black.withOpacity(0.6))),
                             Icon(Icons.arrow_forward_ios, size: 20),
                           ],
                         ),
@@ -70,8 +70,8 @@ class _SettingPagesState extends State<SettingPages> {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text("Delete Account", style: mystyle(19, Colors.black, FontWeight.bold)),
-                                  Text("Delete your current Account", style: mystyle(16, Colors.black.withOpacity(0.6))),
+                                  Text("Delete Account", style: TextStyle(fontSize: 19,color:  Colors.black,fontWeight:  FontWeight.bold)),
+                                  Text("Delete your current Account", style: TextStyle(fontSize: 16,color:  Colors.black.withOpacity(0.6))),
                                 ],
                               ),
                               Icon(Icons.arrow_forward_ios, size: 20),
@@ -98,13 +98,13 @@ class _SettingPagesState extends State<SettingPages> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("Theme", style: mystyle(22, Colors.black, FontWeight.bold)),
+                        Text("Theme", style: TextStyle(fontSize: 22,color:  Colors.black,fontWeight:  FontWeight.bold)),
                         Gap(30),
-                        Text("Dark Theme", style: mystyle(19, Colors.black, FontWeight.bold)),
+                        Text("Dark Theme", style: TextStyle(fontSize: 19)),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text("Change your theme to Dark/Light", style: mystyle(16, Colors.black.withOpacity(0.6))),
+                            Text("Change your theme to Dark/Light", style: TextStyle(fontSize: 16,color:  Colors.black.withOpacity(0.6))),
                             Switch(
                               value: _darkmood,
                               onChanged: (bool value) {

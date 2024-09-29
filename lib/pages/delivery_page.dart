@@ -122,14 +122,19 @@ class _DeliveryPageState extends State<DeliveryPage> {
                       ],
                     ),
                     Gap(20),
-                    GetBuilder<OrderController>(builder: (controller) {
-                      return Text('Total: \$ ${controller.getTotalPrice().toStringAsFixed(2)}',
-                        style: mystyle(20,Colors.black,FontWeight.bold),
-                      );
-                    }),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        GetBuilder<OrderController>(builder: (controller) {
+                          return Text('Total: \$ ${controller.getTotalPrice().toStringAsFixed(2)}',
+                            style: mystyle(20,Colors.black,FontWeight.bold),
+                          );
+                        }),
+                      ],
+                    ),
                     Gap(20),
                     MaterialButton(
-                      minWidth: MediaQuery.of(context).size.width * 0.8,
+                      minWidth: MediaQuery.of(context).size.width * 0.94,
                       color: Colors.black,  height: MediaQuery.of(context).size.height*0.062,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20)

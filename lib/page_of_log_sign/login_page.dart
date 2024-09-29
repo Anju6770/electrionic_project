@@ -77,7 +77,7 @@ class _LoginPageState extends State<LoginPage> {
                   children: [
                     Text("Log In",style: TextStyle(fontSize: 26,fontWeight: FontWeight.bold),),
                     Gap(10),
-                    Text("Please provide you Email ID and password",style: TextStyle(fontSize: 16,color: Colors.grey),),
+                    Text("Please provide your Email ID and password",style: TextStyle(fontSize: 16,color: Colors.grey),),
                     Gap(10),
                     Container(
                       padding: EdgeInsets.all(10),

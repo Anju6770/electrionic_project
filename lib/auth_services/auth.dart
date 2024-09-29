@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -34,6 +35,16 @@ class AuthServices {
     await FirebaseAuth.instance.signOut();
   }
 
+  Future<void> updateProfile(String displayName) async {
+    User? user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      await user.updateProfile(displayName: displayName);
+      await user.reload();
+      user = FirebaseAuth.instance.currentUser; // Reload user to get updated data
+    }
+  }
+
   void signInWithGoogle() async {
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
     final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
@@ -44,7 +55,7 @@ class AuthServices {
     );
 
     await FirebaseAuth.instance.signInWithCredential(credential);
-    Get.offAllNamed('/cover');
+    Get.offAllNamed('/button');
   }
 
 

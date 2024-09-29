@@ -3,6 +3,7 @@ import 'package:electrionic_project/Main_page/services.dart';
 import 'package:electrionic_project/auth_services/auth.dart';
 import 'package:electrionic_project/data/sign%20in_list.dart';
 import 'package:electrionic_project/model/cover_first.dart';
+import 'package:electrionic_project/model/cover_last.dart';
 import 'package:electrionic_project/model/sign%20In.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -22,7 +23,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
   AuthServices _auth = AuthServices();
 
   final TextEditingController _firstNameController = TextEditingController();
-  final TextEditingController _lastNameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _locationController = TextEditingController();
   TextEditingController _numberController = TextEditingController();
@@ -96,54 +96,27 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       ),
                     ),
                     Gap(20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          padding: EdgeInsets.all(10),
-                          height: 55,
-                          width: 140,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.grey.withOpacity(0.2),
-                          ),
-                          child: TextFormField(
-                            controller: _firstNameController,
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: "First Name",
-                            ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Enter first name";
-                              }
-                              return null;
-                            },
-                          ),
+                    Container(
+                      padding: EdgeInsets.all(10),
+                      height: 55,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.grey.withOpacity(0.2),
+                      ),
+                      child: TextFormField(
+                        controller: _firstNameController,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: "Full Name",
                         ),
-                        Container(
-                          padding: EdgeInsets.all(10),
-                          height: 55,
-                          width: 140,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.grey.withOpacity(0.2),
-                          ),
-                          child: TextFormField(
-                            controller: _lastNameController,
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: "Second Name",
-                            ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Enter second name";
-                              }
-                              return null;
-                            },
-                          ),
-                        ),
-                      ],
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Enter first name";
+                          }
+                          return null;
+                        },
+                      ),
                     ),
                     Gap(20),
                     Container(
@@ -278,7 +251,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
                             Register(
                               email: _emailController.text.toString(),
                               password: _passwordController.text.toString(),
-                              lastName: _lastNameController.text.toString(),
                               firstName: _firstNameController.text.toString(),
                               location: _locationController.text.toString(),
                               number: _numberController.text.toString(),
@@ -379,6 +351,48 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       ),
                     ),
                     Gap(15),
+                    InkWell(
+                      onTap:  () async {
+                        _auth.signInWithGoogle();
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("Or Sign In with goggle",style: TextStyle(fontSize: 14),),
+                          Gap(10),
+                          StreamBuilder<List<CoverLast>>(
+                            stream: _services.fetchlog(),
+                            builder: (context,snapshot){
+                              if (snapshot.hasError) {
+                                return Center(child: Text('Error: ${snapshot.error}'));
+                              }
+                              if (!snapshot.hasData) {
+                                return Center(child: CircularProgressIndicator());
+                              }
+                              final logo = snapshot.data!;
+                              return SizedBox(
+                                height: MediaQuery.of(context).size.height * 0.05,
+                                child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  shrinkWrap: true,
+                                  itemCount: logo.length,
+                                  itemBuilder: (context, index) {
+                                    final logos = logo[index];
+                                    return Container(
+                                      height: 50,
+                                      width: 50,
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(40),
+                                          image: DecorationImage(image: NetworkImage("${logos.image1}"),fit: BoxFit.fill,)),
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
                     Center(
                       child: Container(
                           width: MediaQuery.of(context).size.width*0.6,

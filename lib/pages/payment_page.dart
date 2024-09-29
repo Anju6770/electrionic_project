@@ -35,7 +35,7 @@ class _PaymentPageState extends State<PaymentPage> {
         ),
         title: Text(
           "Payment Information",
-          style: mystyle(29,),
+          style: mystyle(28,),
         ),
         centerTitle: true,
       ),
@@ -47,19 +47,19 @@ class _PaymentPageState extends State<PaymentPage> {
             children: [
               Text(
                 'Name: ${customer[0].name}',
-                style: TextStyle(fontSize: 25,color:  Colors.black,fontWeight:  FontWeight.bold),
+                style: TextStyle(fontSize: 24,color: Colors.grey),
               ),
               Text(
                 'Email: ${customer[0].email}',
-                style: TextStyle(fontSize: 25,color:  Colors.black,fontWeight:  FontWeight.bold),
+                style: TextStyle(fontSize: 24,color: Colors.grey),
               ),
               Text(
                 'Contact:+975-${customer[0].phoneNo}',
-                style: TextStyle(fontSize: 25,color:  Colors.black,fontWeight:  FontWeight.bold),
+                style: TextStyle(fontSize: 24,color: Colors.grey),
               ),
               Text(
                 'Address: ${customer[0].address}',
-                style: TextStyle(fontSize: 25,color:  Colors.black,fontWeight:  FontWeight.bold),
+                style: TextStyle(fontSize: 24,color: Colors.grey),
               ),
               ListView.builder(
                 physics: NeverScrollableScrollPhysics(),
@@ -76,13 +76,13 @@ class _PaymentPageState extends State<PaymentPage> {
                           children: [
                             GetBuilder<OrderController>(builder: (controller) {
                               return Text('Total: \$ ${controller.getTotalPrice().toStringAsFixed(2)}',
-                                style: TextStyle(fontSize: 25,color:  Colors.black,fontWeight:  FontWeight.bold),
+                                style: TextStyle(fontSize: 24,color: Colors.grey),
                               );
                             }),
                             Gap(10),
                             Text(
                               "Choose your payment method",
-                              style: mystyle(29, Colors.black),
+                              style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),
                             ),
                             Gap(10),
                             Card(

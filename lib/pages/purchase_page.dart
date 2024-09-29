@@ -2,7 +2,6 @@ import 'package:electrionic_project/time_pass/Constant/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
-import 'package:lottie/lottie.dart';
 import 'package:url_launcher/url_launcher.dart';
 class PurchasePage extends StatefulWidget {
   const PurchasePage({super.key});
@@ -18,7 +17,7 @@ class _PurchasePageState extends State<PurchasePage> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         leading: InkWell(onTap: (){Get.offAllNamed('button');}, child: Icon(Icons.arrow_back,size: 27,)),
-        title: Text("Order Tracking",style: mystyle(30),),
+        title: Text("Order Tracking",style: mystyle(28),),
         centerTitle: true,
       ),
       backgroundColor: Colors.white,

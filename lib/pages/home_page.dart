@@ -1,15 +1,21 @@
+import 'dart:io';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:electrionic_project/Main_page/services.dart';
 import 'package:electrionic_project/data/sign%20in_list.dart';
 import 'package:electrionic_project/model/home.dart';
 import 'package:electrionic_project/model/inside_logo.dart';
+import 'package:electrionic_project/pages/phone.dart';
 import 'package:electrionic_project/pages/search_product.dart';
 import 'package:electrionic_project/time_pass/Constant/constants.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:image_picker/image_picker.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -19,25 +25,110 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late String image;
-
-  final storage = FirebaseStorage.instance;
+  User? user;
+  File? _image;
 
   @override
   void initState() {
     super.initState();
-    image = "";
-    getImage();
-  }
-
-  Future<void> getImage() async {
-    final ref = storage.ref().child("inside_ele-removebg-preview.png");
-    final url = await ref.getDownloadURL();
-    setState(() {
-      image = url;
-    });
+    user = FirebaseAuth.instance.currentUser;
   }
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  Future<void> _pickImage() async {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Container(
+          padding: EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Select an option',
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
+              SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      _imageFromCamera();
+                      Navigator.pop(context);
+                    },
+                    icon: Icon(Icons.camera_alt, size: 30),
+                    tooltip: 'Take a photo',
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      _imageFromGallery();
+                      Navigator.pop(context);
+                    },
+                    icon: Icon(Icons.image, size: 30),
+                    tooltip: 'Choose from gallery',
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _imageFromGallery() async {
+    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedFile == null) return;
+    setState(() {
+      _image = File(pickedFile.path);
+    });
+  }
+
+  Future<void> _imageFromCamera() async {
+    final pickedFile = await ImagePicker().pickImage(source: ImageSource.camera);
+    if (pickedFile == null) return;
+    setState(() {
+      _image = File(pickedFile.path);
+    });
+  }
+
+  // Sign in with Google
+  Future<User?> signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+
+      if (googleAuth?.idToken != null && googleAuth?.accessToken != null) {
+        final AuthCredential credential = GoogleAuthProvider.credential(
+          idToken: googleAuth?.idToken,
+          accessToken: googleAuth?.accessToken,
+        );
+        final UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+        setState(() {
+          user = userCredential.user;
+        });
+        return userCredential.user;
+      }
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
+
+  // Sign in with email/password
+  Future<User?> signInWithEmailPassword(String email, String password) async {
+    try {
+      final UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
+      setState(() {
+        user = userCredential.user;
+      });
+      return userCredential.user;
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
   @override
   Widget build(BuildContext context) {
     final CollectionReference one = FirebaseFirestore.instance.collection("first");
@@ -49,32 +140,35 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           children: [
             UserAccountsDrawerHeader(
-              accountName: Row(
-                children: [
-                  Text(
-                    '${userData[0].firstName}',
-                    style: mystyle(25,Colors.white,FontWeight.bold),
-                  ),
-                  Gap(10),
-                  Text(
-                    '${userData[0].lastName}',
-                    style: mystyle(25,Colors.white,FontWeight.bold),
-                  ),
-                ],
+              accountName: Text(
+                user?.displayName ?? "${userData[0].firstName}",
+                style: mystyle(25, Colors.white, FontWeight.bold),
               ),
-              accountEmail: Text('${userData[0].email}', style: mystyle(25,Colors.white,FontWeight.bold),),
+              accountEmail: Text(
+                user?.email ?? "${userData[0].email}",
+                style: mystyle(25, Colors.white, FontWeight.bold),
+              ),
               currentAccountPicture: Container(
-                height: 80,
-                width: 50,
+                margin: EdgeInsets.all(5),
+                height: 100,
+                width: 100,
                 decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    image: DecorationImage(image: AssetImage('assets/image/pro.jpg',),fit: BoxFit.cover)
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                    image: _image != null
+                        ? FileImage(_image!) // If the user picked an image
+                        : (user?.photoURL != null // If the user has a photo URL from Google
+                        ? NetworkImage(user!.photoURL!)
+                        : AssetImage('assets/image/pro.jpg')) as ImageProvider, // Fallback to default image
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
               decoration: BoxDecoration(
                 color: Colors.black.withOpacity(0.8),
               ),
             ),
+            Gap(5),
             Padding(
               padding: const EdgeInsets.all(15),
               child: Column(
@@ -244,7 +338,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     InkWell(
                       onTap: (){
-                        Get.to(SearchDoc());
+                        Get.to(SearchDoc(),transition: Transition.downToUp);
                       },
                       child: Card(
                         elevation: 3.5,
@@ -323,12 +417,11 @@ class _HomePageState extends State<HomePage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [Text(
                           "Categories",
-                          style: TextStyle(
-                              fontSize: 25, fontWeight: FontWeight.bold),
+                          style: mystyle(26),
                         ),
                         Row(
                           children:[
-                            Text("See more", style: TextStyle(fontSize: 18)),
+                            Text("See more", style: TextStyle(fontSize: 16)),
                             Gap(6),
                             Icon(Icons.arrow_forward_ios, size: 16),
                           ],
@@ -356,7 +449,7 @@ class _HomePageState extends State<HomePage> {
                                 final second = sec.docs[index];
                                 return InkWell(
                                   onTap: (){
-                                    Get.toNamed('/pho');
+                                    Get.to(Phone(),transition: Transition.leftToRightWithFade);
                                   },
                                   child: Container(
                                     margin:EdgeInsets.all(6),
@@ -381,12 +474,11 @@ class _HomePageState extends State<HomePage> {
                       children: [
                         Text(
                           "Top Electronics",
-                          style: TextStyle(
-                              fontSize: 25, fontWeight: FontWeight.bold),
+                          style: mystyle(26),
                         ),
                         Row(
                           children:[
-                            Text("See more", style: TextStyle(fontSize: 18)),
+                            Text("See more", style: TextStyle(fontSize: 16)),
                             Gap(6),
                             Icon(Icons.arrow_forward_ios, size: 16),
                           ],

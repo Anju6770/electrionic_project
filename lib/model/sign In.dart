@@ -4,7 +4,6 @@ class Register{
   String location;
   String number;
   String firstName;
-  String lastName;
 
   Register({
     required this.email,
@@ -12,6 +11,6 @@ class Register{
     required this.password,
     required this.number,
     required this.firstName,
-    required this.lastName,
   });
 }
+

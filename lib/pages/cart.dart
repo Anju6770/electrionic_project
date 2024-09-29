@@ -22,7 +22,7 @@ class _CartState extends State<Cart> {
         iconTheme: IconThemeData(
           color: Colors.black,size: 27
         ),
-        title: Text("Cart",style: TextStyle(fontSize: 26,fontWeight: FontWeight.bold),),
+        title: Text("Cart",style: mystyle(28),),
         centerTitle: true,
       ),
       backgroundColor: Colors.white,
@@ -277,9 +277,9 @@ class _CartState extends State<Cart> {
                         alignment: Alignment.center,
                         child: Text(
                           'Buy Now',
-                          style: TextStyle(fontSize: 20,color:  orderController.isDelivery.value
+                          style: mystyle(20,orderController.isDelivery.value
                               ? Colors.black
-                              : Colors.white,fontWeight:  FontWeight.bold,
+                              : Colors.white,FontWeight.bold,
                           ),
                         ),
                       )),
