@@ -190,12 +190,15 @@ class _ProfilePageState extends State<ProfilePage> {
                           children: [
                             Icon(Icons.email_outlined, color: Colors.grey),
                             Gap(10),
-                            Text(
-                              user?.email ?? "No Email",
-                              style: TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold),
+                            Container(
+                              width: MediaQuery.of(context).size.width*0.7,
+                              child: Text(
+                                user?.email ?? "No Email",
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold),
+                              ),
                             ),
                           ],
                         ),
