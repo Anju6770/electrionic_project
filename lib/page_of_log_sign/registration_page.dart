@@ -245,7 +245,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       color: Colors.black,
                       onPressed: () async {
                         User? user = await _auth.signUpWithEmailAndPassword(
-                            _emailController.text, _passwordController.text,);
+                            _emailController.text, _passwordController.text,
+                          _firstNameController.text,
+                          _locationController.text,);
                         if (_formKey.currentState?.validate() ?? false) {
                           userData.add(
                             Register(
