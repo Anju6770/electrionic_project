@@ -6,30 +6,23 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthServices {
   FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Future<User?> signUpWithEmailAndPassword(
-      String email,
-      String password,
-      String firstName,
-      String location,
-      String number,
-      ) async {
+  Future<User?> signUpWithEmailAndPassword(String email, String password, String firstName, String location,String number) async {
     try {
-      // Try to create user in Firebase Authentication
-      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+      // Create user in Firebase Authentication
+      UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
 
       User? user = userCredential.user;
 
+      // Save additional details to Firestore
       if (user != null) {
-        // Save user details to Firestore only after successful registration
-        await _firestore.collection('users').doc(user.uid).set({
+        await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
           'firstName': firstName,
-          'location': location,
           'number': number,
+          'location': location,
           'email': email,
           'createdAt': DateTime.now(),
         });
@@ -37,8 +30,8 @@ class AuthServices {
 
       return user;
     } catch (e) {
-      print('Error in registration: $e');
-      return null; // Return null to indicate failure
+      print(e.toString());
+      return null;
     }
   }
 
