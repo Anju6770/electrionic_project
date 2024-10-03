@@ -244,105 +244,74 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       shape: BeveledRectangleBorder(borderRadius: BorderRadius.circular(3)),
                       color: Colors.black,
                       onPressed: () async {
-                        User? user = await _auth.signUpWithEmailAndPassword(
-                            _emailController.text, _passwordController.text,
-                          _firstNameController.text,
-                          _locationController.text,
-                          _numberController.text
-                        );
                         if (_formKey.currentState?.validate() ?? false) {
-                          userData.add(
-                            Register(
-                              email: _emailController.text.toString(),
-                              password: _passwordController.text.toString(),
-                              firstName: _firstNameController.text.toString(),
-                              location: _locationController.text.toString(),
-                              number: _numberController.text.toString(),
-                            ),
+                          User? user = await _auth.signUpWithEmailAndPassword(
+                            _emailController.text.trim(),
+                            _passwordController.text.trim(),
+                            _firstNameController.text.trim(),
+                            _locationController.text.trim(),
+                            _numberController.text.trim(),
                           );
-                        }
-                        if (user != null) {
-                          Get.bottomSheet(
-                            Container(
-                              height: 320,
-                              width: double.infinity,  // Ensures full-width
-                              padding: EdgeInsets.all(16.0),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(20.0),
-                                  topRight: Radius.circular(20.0),
+
+                          if (user != null) {
+                            // Registration success bottom sheet
+                            Get.bottomSheet(
+                              Container(
+                                // Your success bottom sheet UI here
+                              ),
+                              isScrollControlled: true,
+                            );
+                          } else {
+                            // Error bottom sheet
+                            Get.bottomSheet(
+                              Container(
+                                height: 300,
+                                width: double.infinity,
+                                padding: EdgeInsets.all(30),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(20.0),
+                                    topRight: Radius.circular(20.0),
+                                  ),
+                                ),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Sorry",
+                                      style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.red),
+                                    ),
+                                    SizedBox(height: 10),
+                                    Text(
+                                      "There has been a problem, please try again.",
+                                      style: TextStyle(fontSize: 23),
+                                    ),
+                                    SizedBox(height: 20),
+                                    Center(
+                                      child: ElevatedButton(
+                                        onPressed: () {
+                                          Get.back();
+                                        },
+                                        child: Container(
+                                          height: MediaQuery.of(context).size.height * 0.1,
+                                          width: MediaQuery.of(context).size.width * 0.8,
+                                          child: Center(
+                                            child: Text(
+                                              "Try Again",
+                                              style: TextStyle(color: Colors.black, fontSize: 20),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    height: 120,
-                                    width: 120,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(40),
-                                      image: DecorationImage(image: AssetImage("assets/image/complete.png"),fit: BoxFit.cover),
-                                    ),
-                                  ),
-                                  Text(
-                                    "Registration Successful",
-                                    style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
-                                  ),
-                                  SizedBox(height: 10),
-                                  Text("By tap sign in, you have accept the terms and policy of the app",style: TextStyle(fontSize: 20),),
-                                  SizedBox(height: 20),
-                                  InkWell(
-                                      onTap: (){
-                                        Get.offAllNamed('/log');
-                                      },
-                                      child: Text("Sign In",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),)),
-                                ],
-                              ),
-                            ),
-                            isScrollControlled: true,
-                          );
-                        } else {
-                          Get.bottomSheet(
-                            Container(
-                              height: 300,
-                              width: double.infinity,  // Ensures full-width
-                              padding: EdgeInsets.all(30),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(20.0),
-                                  topRight: Radius.circular(20.0),
-                                ),
-                              ),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Sorry",
-                                    style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold,color: Colors.red),
-                                  ),
-                                  SizedBox(height: 10),
-                                  Text("There has been a problem, try again.",style: TextStyle(fontSize: 23),),
-                                  SizedBox(height: 20),
-                                  Center(
-                                    child: ElevatedButton(
-                                      onPressed: () {
-                                        Get.back();
-                                      },
-                                      child: Container(
-                                          height: MediaQuery.of(context).size.height*0.1,
-                                          width: MediaQuery.of(context).size.width*0.8,
-                                          child: Center(child: Text("Try Again",style: TextStyle(color: Colors.black,fontSize: 20)))),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            isScrollControlled: true,
-                          );
+                              isScrollControlled: true,
+                            );
+                          }
                         }
                       },
                       child: Row(
