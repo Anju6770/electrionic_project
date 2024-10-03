@@ -7,7 +7,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 class AuthServices {
   FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Future<User?> signUpWithEmailAndPassword(String email, String password, String firstName, String location) async {
+  Future<User?> signUpWithEmailAndPassword(String email, String password, String firstName, String location,String number) async {
     try {
       // Create user in Firebase Authentication
       UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
@@ -21,6 +21,7 @@ class AuthServices {
       if (user != null) {
         await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
           'firstName': firstName,
+          'number': number,
           'location': location,
           'email': email,
           'createdAt': DateTime.now(),

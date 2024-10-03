@@ -247,7 +247,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         User? user = await _auth.signUpWithEmailAndPassword(
                             _emailController.text, _passwordController.text,
                           _firstNameController.text,
-                          _locationController.text,);
+                          _locationController.text,
+                          _numberController.text
+                        );
                         if (_formKey.currentState?.validate() ?? false) {
                           userData.add(
                             Register(
